@@ -50,7 +50,7 @@
 	//執行SQL查詢
 	$sql = "INSERT INTO list(tag,subject,content,date,schedule,importance)
 	        VALUES ('$tag','$subject','$content','$current_time','$schedule','$importance')";
-	$result = execute_sql($link, "news", $sql);
+	$result = execute_sql($link, "todoit", $sql);
 	
 	//關閉資料連接
 	mysqli_close($link);

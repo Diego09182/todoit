@@ -220,7 +220,7 @@
 										
 			//執行SQL查詢
 			$sql = "SELECT id,tag,subject,date,schedule,finish_time,importance FROM list ORDER BY date DESC";
-			$post_result = execute_sql($link, "news", $sql);
+			$post_result = execute_sql($link, "todoit", $sql);
 									
 			//取得記錄數 
 			$total_records = mysqli_num_rows($post_result);
@@ -278,7 +278,7 @@
 							
 				$j++;
 			}
-							
+			
 			//產生導覽列
 			echo"<ul class='pagination center'>";						
 				if ($page > 1)
@@ -304,7 +304,7 @@
 	
 		//執行SQL查詢
 		$sql = "SELECT id,billboard,date FROM whiteboard";
-		$result = execute_sql($link,"news",$sql);
+		$result = execute_sql($link,"todoit",$sql);
 		$row = mysqli_fetch_assoc($result);
 		
 	?>
@@ -347,14 +347,14 @@
 			<div class="col s12 m4">
 			  <div class="icon-block">
 				<h2 class="center brown-text"><i class="material-icons">group</i></h2>
-				<h5 class="center">注重UI/UX</h5>
+				<h5 class="center">簡易編寫</h5>
 				<p class="light center">簡單UI設計</p>
 			  </div>
 			</div>
 			<div class="col s12 m4">
 			  <div class="icon-block">
 				<h2 class="center brown-text"><i class="material-icons">mode_edit</i></h2>
-				<h5 class="center">簡易編寫</h5>
+				<h5 class="center">注重UI/UX</h5>
 				<p class="light center">響應式設計</p>
 			  </div>
 			</div>
@@ -467,6 +467,5 @@
 		});
 	
 </script>
-
-  </body>
+</body>
 </html>

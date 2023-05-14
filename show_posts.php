@@ -50,12 +50,6 @@
 		  </ul>
 		  <ul class="right hide-on-med-and-down">
 			<li><a class="waves-effect" href="myhome.php">設定工具</a></li>
-			<?php
-				if ($member_id == 45)
-				{
-					echo"<li><a class='waves-effect' href='review.php'>審查文章</a></li>";
-				}
-			?>
 		</ul>
 		<ul id="slide-out" class="side-nav">
 			<li>
@@ -121,7 +115,7 @@
 				
 	//執行SQL查詢
 	$sql = "SELECT * FROM list WHERE id = $id";
-	$result = execute_sql($link, "news", $sql);
+	$result = execute_sql($link, "todoit", $sql);
 						  
     //顯示原討論主題的內容
 	while ($row = mysqli_fetch_assoc($result))
@@ -172,11 +166,6 @@
 		echo"<br>";
 		
 	}	
-			
-
-    //執行 SQL 命令
-    $sql = "SELECT * FROM reply_message WHERE reply_id = $id";
-    $result = execute_sql($link, "news", $sql);
 	  
 	echo"<div class='container'>";
 		echo"<ul class='collection'>";
@@ -194,123 +183,13 @@
 			echo"</li>";
 		echo"</ul>";
 	echo"</div>";
-			
-    if (mysqli_num_rows($result) <> 0)
-    {		  	
-      //顯示回覆主題的內容
-		while ($row = mysqli_fetch_assoc($result))
-		{	
-			
-			$avatar = $row["avater"];
-			
-			echo"<div class='container'>";
-				echo"<ul class='collection'>";
-					echo"<li class='collection-item avatar'>";
-						echo"<img src='$avatar' alt='' class='circle'>";
-						echo"<span class='title left'>".$row["subject"]."</span>";
-						echo"<span class='author right'>發文者:".$row["author"]."</span>";
-						echo"<br>";
-						echo"<p class='right'>".$row["date"]."</p>";
-						echo"<br>";
-						echo"<hr>";
-						echo"<span class='left'>".$row["content"]."</span>";
-						echo"<br>";
-						echo"<br>";
-						echo"<br>";
-					echo"</li>";
-				echo"</ul>";
-			echo"</div>";
-		}
-    }
+	
 		
 		//釋放記憶體空間
 		mysqli_free_result($result);
 		mysqli_close($link);
 		
 	?>
-	
-	<div id="modal3" class="modal">
-		<div class="modal-content">
-			<h4 class="center-align">檢舉貼文</h4>
-				<div class="col s12 m6">
-					<div class="card blue-grey darken-1 card">
-					<div class="card-content white-text">
-					<span class="card-title">此貼文違反的規定</span>
-						<form name="report" method="post" action="report.php">
-							<div class="input-field col m4 right">
-								<i class="material-icons prefix">perm_identity</i>
-								<input class="validate" name="author" type="text" value="<?php echo $users_row{"account"} ?>" readonly>
-								<input type="hidden" name="reply_id" value="<?php echo $id ?>">
-								<label for="icon_prefix2">帳號</label>
-							</div>
-							<div class="row">
-								<div class="input-field col s12 m12">
-									<i class="material-icons prefix">mode_edit</i>
-									<input name="report"  id="name" type="text" class="validate" length="15">
-									<label for="last_name">檢舉原因</label>
-								</div>
-								<div class="input-field col s12 m12">
-									<i class="material-icons prefix">mode_edit</i>
-									<textarea name="report_content" id="textarea" class="materialize-textarea" length="40"></textarea>
-									<label for="last_name">檢舉附註內容</label>
-								</div>
-							</div>
-							<br>
-							<div class="card-action center-align">
-								<a class="waves-effect waves-light btn brown" id="button" onClick="check_report()">發送</a>
-								<a class="waves-effect waves-light btn brown" id="button" onClick="reset_report()">重新輸入</a>
-								<br>
-								<br>
-								<a href="main.php">回首頁</a>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<div id="modal1" class="modal">
-		<div class="modal-content">
-			<h4 class="center-align">回覆貼文</h4>
-			<div class="col s12 m6">
-				<div class="card blue-grey darken-1 card">
-					  <div class="card-content white-text">
-						<form name="myForm" method="post" action="post_reply.php">
-							<input type="hidden" name="reply_id" value="<?php echo $id ?>">
-							<input type="hidden" name="avater" value="<?php echo $user_avatar ?>">
-							<span class="card-title">留言板</span>
-								<div class="input-field col s3 m3 right">
-									<i class="material-icons prefix">perm_identity</i>
-									<input class="validate" name="author" type="text" value="<?php echo $users_row{"account"} ?>" readonly>
-									<label for="icon_prefix2">帳號</label>
-								</div>
-							<div class="row">
-								<div class="input-field col s12 m12">
-									<i class="material-icons prefix">mode_edit</i>
-									<input name="subject"  id="last_name" type="text" class="validate" length="15">
-									<label for="last_name">主題</label>
-								</div>
-								<div class="input-field col s12 m12">
-								  <i class="material-icons prefix">mode_edit</i>
-								  <textarea name="content" id="textarea1" class="materialize-textarea" length="40"></textarea>
-								  <label for="last_name">內容</label>
-								</div>
-							</div>
-							<br>
-							<div class="card-action center-align">
-								<a class="waves-effect waves-light btn brown" id="button" onClick="check_data()">發送</a>
-								<a class="waves-effect waves-light btn brown" id="button" onClick="reset()">重新輸入</a>
-								<br>
-								<br>
-								<a href="main.php">回首頁</a>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 	
 	<br><br>
 	
@@ -373,64 +252,10 @@
 	    location.href = "delPost.php?show_posts=" + id;
 	}
 	
-	function check_data()
-	{		
-		if (document.myForm.subject.value.length == 0)
-		  {
-			alert("回覆主題一定要填寫");
-			return false;
-		  }
-		  if (document.myForm.subject.value.length > 15)
-		  {
-			alert("回覆主題不可以超過15個字元");
-			return false;
-		  }
-		  if (document.myForm.content.value.length == 0)
-		  {
-			alert("回覆內容一定要填寫");
-			return false;
-		  }
-		  if (document.myForm.content.value.length > 40)
-		  {
-			alert("回覆內容不可以超過40個字元");
-			return false;
-		  }				
-	  myForm.submit();
-	}
-	
-	function check_report()
-	{		
-		if (document.report.report.value.length == 0)
-		  {
-			alert("檢舉原因一定要填寫");
-			return false;
-		  }
-		  if (document.report.report.value.length > 15)
-		  {
-			alert("檢舉原因不可以超過15個字元");
-			return false;
-		  }
-		  if (document.report.report_content.value.length == 0)
-		  {
-			alert("檢舉附註內容一定要填寫");
-			return false;
-		  }
-		  if (document.report.report_content.value.length > 40)
-		  {
-			alert("檢舉附註內容不可以超過40個字元");
-			return false;
-		  }				
-	  report.submit();
-	}
 	
 	function reset(){
 		document.myForm.subject.value = ""
 		document.myForm.content.value = ""
-	}
-	
-	function reset_report(){
-		document.report.report.value = ""
-		document.report.report_content.value = ""
 	}
 	
 	$(document).ready(function(){

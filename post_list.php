@@ -42,7 +42,7 @@
 	//執行SQL查詢
 	$sql = "INSERT INTO todoit(subject,content,date)
 	        VALUES ('$subject','$content','$current_time')";
-	$result = execute_sql($link, "news", $sql);
+	$result = execute_sql($link, "todoit", $sql);
 	
 	//關閉資料連接
 	mysqli_close($link);

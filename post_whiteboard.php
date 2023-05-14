@@ -10,7 +10,7 @@
 	
 	//執行 UPDATE 陳述式來更新時間
 	$sql = "UPDATE whiteboard SET billboard = '$whiteboard',date = '$current_time' WHERE id = '$id'";
-	$result = execute_sql($link,"news",$sql);
+	$result = execute_sql($link,"todoit",$sql);
 	
 	//關閉資料連接
 	mysqli_close($link);

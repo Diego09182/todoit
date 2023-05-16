@@ -12,7 +12,8 @@
 	}
 	
 	function error() {
-	  
+
+		echo "<script>alert('輸入的資料不能為空');</script>";
 		header("location:main.php");
 		exit();
 		
@@ -48,9 +49,9 @@
 	$link = create_connection();
 				
 	//執行SQL查詢
-	$sql = "INSERT INTO list(tag,subject,content,date,schedule,importance)
+	$sql = "INSERT INTO task(tag,subject,content,date,schedule,importance)
 	        VALUES ('$tag','$subject','$content','$current_time','$schedule','$importance')";
-	$result = execute_sql($link, "todoit", $sql);
+	execute_sql($link,"todoit",$sql);
 	
 	//關閉資料連接
 	mysqli_close($link);

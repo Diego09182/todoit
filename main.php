@@ -41,7 +41,7 @@
 <body>
 	
   <nav class="light lighten-1 brown" role="navigation">
-  	<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo center" @click="reset()"><b>TO DO IT</b></a>
+  	<div class="nav-wrapper container"><a id="logo-container" href="main.php" class="brand-logo center" @click="reset()"><b>TO DO IT</b></a>
   		<ul class="left hide-on-med-and-down">
   		</ul>
 		<ul class="right hide-on-med-and-down">
@@ -160,7 +160,7 @@
 						<span class="card-title">發表事項</span>
 						<div class="input-field col s12">
 							<i class="material-icons prefix">mode_edit</i>
-							<input class="validate" name="subject" type="text" size="15" length="15">
+							<input class="validate" name="list" type="text" size="15" length="15">
 							<label for="icon_prefix2">任務事項</label>
 						</div>
 						<br>
@@ -176,17 +176,17 @@
 	<div id="modal3" class="modal">
 		<div class="modal-content">
 			<div class="card blue-grey darken-1 card">
-				<form name="billboard" method="post" action="post_whiteboard.php" enctype="multipart/form-data">
+				<form name="whiteboard" method="post" action="post_whiteboard.php" enctype="multipart/form-data">
 					<div class="card-content white-text">
 						<span class="card-title">白板</span>
 						<div class="input-field col s12">
 							<i class="material-icons prefix">mode_edit</i>
-							<input class="validate" name="subject" type="text" size="15" length="15">
+							<input class="validate" name="whiteboard" type="text" size="25" length="25">
 							<label for="icon_prefix2">白板內容</label>
 						</div>
 						<br>
-						<a class="waves-effect waves-light btn brown right" onClick="check_billboard()">確定</a>
-						<a class="waves-effect waves-light btn brown right" onClick="reset_billboard()">重新輸入</a>
+						<a class="waves-effect waves-light btn brown right" onClick="check_whiteboard()">確定</a>
+						<a class="waves-effect waves-light btn brown right" onClick="reset_whiteboard()">重新輸入</a>
 						<br><br>
 					</div>
 				</form>
@@ -195,20 +195,9 @@
 	</div>
 	
 	<div class="container">
-		<div class="row">
-		<?php	
+		
+		<?php
 			
-			echo"<div class='col s12 m4 right'>";
-					echo"<div class='collection center-align' id='classification'>";
-						echo"<a  class='collection-item black-text'><h4>任務分類</h4></a>";
-						echo"<a  class='collection-item black-text'>工作任務</a>";
-						echo"<a  class='collection-item black-text'>長期計畫</a>";
-						echo"<a  class='collection-item black-text'>休憩時間</a>";
-						echo"<a  class='collection-item black-text'>旅遊安排</a>";
-						echo"<a  class='collection-item black-text'>社交活動</a>";
-					echo"</div>";
-			echo"</div>";
-					
 			//指定每頁顯示幾筆記錄
 			$records_per_page = 2;
 								
@@ -217,96 +206,156 @@
 				$page = $_GET["page"];
 			else
 				$page = 1;
-										
+
+			//取得要顯示第幾頁的記錄
+			if (isset($_GET["list_page"]))
+				$list_page = $_GET["list_page"];
+			else
+				$list_page = 1;
+				
 			//執行SQL查詢
-			$sql = "SELECT id,tag,subject,date,schedule,finish_time,importance FROM list ORDER BY date DESC";
-			$post_result = execute_sql($link, "todoit", $sql);
+			$sql = "SELECT * FROM task ORDER BY date DESC";
+			$task_result = execute_sql($link, "todoit", $sql);
 									
 			//取得記錄數 
-			$total_records = mysqli_num_rows($post_result);
+			$total_records = mysqli_num_rows($task_result);
 								
 			//計算總頁數
-			$total_pages = ceil($total_records / $records_per_page);
+			$total_task_pages = ceil($total_records / $records_per_page);
 								
 			//計算本頁第一筆記錄的序號
 			$started_record = $records_per_page * ($page - 1);
 								
 			//將記錄指標移至本頁第一筆記錄的序號
-			mysqli_data_seek($post_result, $started_record);					
-							  
-			//顯示貼文
-			$j = 1;
-			while ($row = mysqli_fetch_assoc($post_result) and $j <= $records_per_page)
-			{
-				echo"<div class='col s12 m4'>";
-					echo"<div class='card hoverable small center'  id='card'>";
-						echo"<div class='card-content'>";
-							echo"<h5>";
-								echo"任務主題:".$row["subject"];
-							echo"</h5>";
-							echo"<br>";
-							echo"<div class='chip left brown'>";
-								echo"#".$row["tag"];
+			mysqli_data_seek($task_result, $started_record);					
+			
+			echo"<div class='row'>";
+				//顯示貼文
+				$j = 1;
+				while ($row = mysqli_fetch_assoc($task_result) and $j <= $records_per_page)
+				{
+					echo"<div class='col s12 m4'>";
+						echo"<div class='card hoverable center'  id='card'>";
+							echo"<div class='card-content'>";
+								echo"<h5>";
+									echo"任務主題:".$row["subject"];
+								echo"</h5>";
+								echo"<br>";
+								echo"<div class='chip left brown white-text	'>";
+									echo"#".$row["tag"];
+								echo"</div>";
+								echo"<br><br><br><br>";
+								echo"<p class='truncate right'>";
+									echo"發布時間:".$row["date"];
+								echo"</p>";
+								echo"<br>";
+								echo"<p class='truncate right'>";
+									echo"完成時間:".$row["finish_time"];
+								echo"</p>";
+								echo"<br><br><br>";
+								echo"<div class='left'>任務重要性:";
+									echo"<b>".$row["importance"]."</b>";
+								echo"</div>";
+								echo"<br>";
+								echo"<div class='left'>任務狀況:";
+									if($row["schedule"] == 1){
+										echo"<b>已完成</b>";
+									}
+									if($row["schedule"] == 0){
+										echo"<b>未完成</b>";
+									}
+								echo"</div>";
+								echo"<a class='waves-effect waves-light btn right brown' href='show_task.php?id=".$row["id"]."'>";
+									echo"查看";
+								echo"</a>";
+								echo"<br><br>";
 							echo"</div>";
-							echo"<br><br>";
-							echo"<p class='truncate right'>";
-								echo"發布時間:".$row["date"];
-							echo"</p>";
-							echo"<br>";
-							echo"<p class='truncate right'>";
-								echo"完成時間:".$row["finish_time"];
-							echo"</p>";
-							echo"<br>";
-							echo"<div class='left'>任務重要性:";
-								echo"<b>".$row["importance"]."</b>";
-							echo"</div>";
-							echo"<br>";
-							echo"<div class='left'>任務狀況:";
-								if($row["schedule"] == 1){
-									echo"<b>已完成</b>";
-								}
-								if($row["schedule"] == 0){
-									echo"<b>未完成</b>";
-								}
-							echo"</div>";
-							echo"<a class='waves-effect waves-light btn right brown' href='show_posts.php?id=".$row["id"]."'>";
-								echo"查看";
-							echo"</a>";
 						echo"</div>";
 					echo"</div>";
-				echo"</div>";
-							
-				$j++;
-			}
-			
-			//產生導覽列
-			echo"<ul class='pagination center'>";						
-				if ($page > 1)
-					echo "<li class='waves-effect'><a href='main.php?page=". ($page - 1) ."'><i class='material-icons'>chevron_left</i></a></li>";
-										
-				for ($i = 1; $i <= $total_pages; $i++)
-				{
-					if ($i == $page)
-						echo "<li class='waves-effect'><a href='main.php?page=$i'>$i</a></li>";
-					else
-						echo"<li class='waves-effect'><a href='main.php?page=$i'>$i</a></li>";
+					$j++;
 				}
+
+				//指定每頁顯示幾筆記錄
+				$records_per_page = 4;
+				
+				//執行SQL查詢
+				$sql = "SELECT * FROM list";
+				$list_result = execute_sql($link, "todoit", $sql);
+										
+				//取得記錄數 
+				$total_records = mysqli_num_rows($list_result);
 									
-				if ($page < $total_pages)
-					echo"<li class='waves-effect'><a href='main.php?page=". ($page + 1) ."'><i class='material-icons'>chevron_right</i></a></li>";
-				echo "</p>";		
-			echo"</ul>";
+				//計算總頁數
+				$total_list_pages = ceil($total_records / $records_per_page);
+									
+				//計算本頁第一筆記錄的序號
+				$started_record = $records_per_page * ($list_page - 1);
+				
+				//將記錄指標移至本頁第一筆記錄的序號
+				mysqli_data_seek($list_result, $started_record);					
+								
+				//顯示貼文
+				echo "<div class='col s12 m4 right'>";
+					echo "<ul class='collection with-header'>";
+						echo "<a class='collection-item black-text center'><h4>任務列表</h4></a>";
+						$j = 1;
+						while ($row = mysqli_fetch_assoc($list_result) and $j <= $records_per_page) 
+						{
+							$id = $row["id"];
+							echo"<h4><li class='collection-item'><div>".$row["subject"]."<a href='delList.php?id=$id' class='secondary-content'><i class='material-icons'>delete</i></a></div></li></h4>";
+							$j++;
+						}
+					echo "</ul>";
+				echo "</div>";
+
+			echo"</div>";
+			
+			echo "<div class='row'>";
+			
+				// 分頁
+				echo "<ul class='pagination left'>";
+					if ($page > 1) {
+						echo "<li class='waves-effect'><a href='main.php?page=" . ($page - 1) . "&list_page=$list_page'><i class='material-icons'>chevron_left</i></a></li>";
+					}
+					for ($i = 1; $i <= $total_task_pages; $i++) {
+						if ($i == $page) {
+							echo "<li class='waves-effect'><a href='main.php?page=$i&list_page=$list_page'>$i</a></li>";
+						} else {
+							echo "<li class='waves-effect'><a href='main.php?page=$i&list_page=$list_page'>$i</a></li>";
+						}
+					}
+					if ($page < $total_task_pages) {
+						echo "<li class='waves-effect'><a href='main.php?page=" . ($page + 1) . "&list_page=$list_page'><i class='material-icons'>chevron_right</i></a></li>";
+					}
+				echo "</ul>";
+
+				// 分頁
+				echo "<ul class='pagination right'>";
+					if ($list_page > 1) {
+						echo "<li class='waves-effect'><a href='main.php?page=$page&list_page=" . ($list_page - 1) . "'><i class='material-icons'>chevron_left</i></a></li>";
+					}
+					for ($k = 1; $k <= $total_list_pages; $k++) {
+						if ($k == $list_page) {
+							echo "<li class='waves-effect'><a href='main.php?page=$page&list_page=$k'>$k</a></li>";
+						} else {
+							echo "<li class='waves-effect'><a href='main.php?page=$page&list_page=$k'>$k</a></li>";
+						}
+					}
+					if ($list_page < $total_list_pages) {
+						echo "<li class='waves-effect'><a href='main.php?page=$page&list_page=" . ($list_page + 1) . "'><i class='material-icons'>chevron_right</i></a></li>";
+					}
+				echo "</ul>";
+			echo "</div>";
+
 		?>
-		</div>
+		
 	</div>
 	
-	<?php
-	
+	<?php	
 		//執行SQL查詢
-		$sql = "SELECT id,billboard,date FROM whiteboard";
+		$sql = "SELECT id, whiteboard, date FROM whiteboard ORDER BY date DESC LIMIT 1";
 		$result = execute_sql($link,"todoit",$sql);
-		$row = mysqli_fetch_assoc($result);
-		
+		$row = mysqli_fetch_assoc($result);		
 	?>
 	
 	<div class="container">
@@ -320,11 +369,11 @@
 					<div class="card-content">
 						<h4>
 							<blockquote>
-								<?php echo $row["billboard"] ?>
+								<?php echo $row["whiteboard"] ?>
 							</blockquote>
 						</h4>
-						<br><br><br><br><br>
-						<h4 class="right">						
+						<br><br><br><br><br><br>
+						<h4 class="right">
 							<?php echo $row["date"] ?>
 						</h4>
 					</div>
@@ -385,7 +434,7 @@
 		  </div>
 		</div>
 	</footer>
-	
+
 <!--  Scripts-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.0.1/vue-router.js"></script>
@@ -394,7 +443,6 @@
 <script src="js/materialize.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.js" integrity="sha256-kRbW+SRRXPogeps8ZQcw2PooWEDPIjVQmN1ocWVQHRY=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v6.0"></script>
 <script src="js/init.js"></script>
 <script type="text/javascript">
 		
@@ -414,21 +462,21 @@
 		  myForm.submit();
 		}
 		
-		function check_billboard()
+		function check_whiteboard()
 		{
-		  if (document.billboard.subject.value.length == 0)
+		  if (document.whiteboard.whiteboard.value.length == 0)
 		  {
 				alert("白板主題一定要填寫");
 				return false;
 		  }
 		  
-		  billboard.submit();
+		  whiteboard.submit();
 		}
 		
 		function check_list()
 		{
 
-		  if (document.list.content.value.length == 0)
+		  if (document.list.list.value.length == 0)
 		  {
 				alert("事項內容一定要填寫");
 				return false;
@@ -438,17 +486,17 @@
 		}
 		
 		function reset(){
-			document.myForm.subject.value = ""
-			document.myForm.content.value = ""
-			document.myForm.tag.value = ""
+			document.myForm.subject.value = "";
+			document.myForm.content.value = "";
+			document.myForm.tag.value = "";
 		}
 		
-		function reset_billboard(){
-			document.billboard.subject.value = ""
+		function reset_whiteboard(){
+			document.whiteboard.whiteboard.value = "";
 		}
 		
 		function reset_list(){
-			document.list.subject.value = ""
+			document.list.subject.value = "";
 		}
 		
 		$(document).ready(function(){

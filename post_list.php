@@ -12,7 +12,8 @@
 	}
 	
 	function error() {
-	  
+		
+		echo "<script>alert('輸入的資料不能為空');</script>";
 		header("location:main.php");
 		exit();
 		
@@ -20,17 +21,11 @@
 	
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {		 
 		  
-		if (empty($_POST["subject"])) {
+		if (empty($_POST["list"])) {
 			error();
 		} else {
-			$subject = test_input($_POST["subject"]);
+			$list = test_input($_POST["list"]);
 		}
-		  
-		if (empty($_POST["content"])) {
-			error();
-		} else {
-			$content = test_input($_POST["content"]);
-		}		
 		
 	}
 	
@@ -40,9 +35,9 @@
 	$link = create_connection();
 	
 	//執行SQL查詢
-	$sql = "INSERT INTO todoit(subject,content,date)
-	        VALUES ('$subject','$content','$current_time')";
-	$result = execute_sql($link, "todoit", $sql);
+	$sql = "INSERT INTO list(subject)
+	        VALUES ('$list')";
+	execute_sql($link, "todoit", $sql);
 	
 	//關閉資料連接
 	mysqli_close($link);

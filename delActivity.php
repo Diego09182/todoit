@@ -1,23 +1,21 @@
 <?php
+
 	require_once("dbtools.inc.php");
-	
+
 	//建立資料連接
 	$link = create_connection();
-	
-	$task_id = $_COOKIE["task_id"];
-	  
-	$sql = "DELETE FROM task WHERE id = '$task_id'";
-	  
-	execute_sql($link,"todoit",$sql);
-	
-	$sql = "DELETE FROM members WHERE task_id = '$task_id'";
+  
+	$id = $_GET['id'];
+
+	$sql = "DELETE FROM activity WHERE id = '$id'";
 	
 	execute_sql($link,"todoit",$sql);
-	
+  
 	//關閉資料連接
 	mysqli_close($link);
-	  
+  
 	//將網頁重新導向
 	header("location:main.php");
 	exit();
+	
 ?>

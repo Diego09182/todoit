@@ -16,7 +16,6 @@
 	
 	function error() {
 		
-		echo "<script>alert('輸入的資料不能為空');</script>";
 		header("location:main.php");
 		exit();
 		

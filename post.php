@@ -12,8 +12,7 @@
 	}
 	
 	function error() {
-
-		echo "<script>alert('輸入的資料不能為空');</script>";
+		
 		header("location:main.php");
 		exit();
 		
@@ -27,10 +26,10 @@
 			$tag = test_input($_POST["tag"]);
 		}
 		  
-		if (empty($_POST["subject"])) {
+		if (empty($_POST["task"])) {
 			error();
 		} else {
-			$subject = test_input($_POST["subject"]);
+			$task = test_input($_POST["task"]);
 		}
 		  
 		if (empty($_POST["content"])) {
@@ -44,14 +43,19 @@
 	$current_time = date("Y-m-d H:i:s");
 	$schedule = 0;
 	$importance = $_POST["importance"];
+	$progress = 0;
 	
 	//建立資料連接
 	$link = create_connection();
-				
+	
 	//執行SQL查詢
-	$sql = "INSERT INTO task(tag,subject,content,date,schedule,importance)
-	        VALUES ('$tag','$subject','$content','$current_time','$schedule','$importance')";
+	$sql = "INSERT INTO task(tag,subject,content,date,progress,schedule,importance)
+	        VALUES ('$tag','$task','$content','$current_time','$progress','$schedule','$importance')";
 	execute_sql($link,"todoit",$sql);
+	
+	//執行 UPDATE 陳述式來更新任務狀態
+	$sql = "UPDATE statistics SET task_count = task_count + 1 WHERE id = 1";
+	execute_sql($link, "todoit", $sql);
 	
 	//關閉資料連接
 	mysqli_close($link);

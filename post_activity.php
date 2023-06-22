@@ -20,21 +20,33 @@
 	
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {		 
 		  
-		if (empty($_POST["list"])) {
+		if (empty($_POST["activity"])) {
 			error();
 		} else {
-			$list = test_input($_POST["list"]);
+			$activity = test_input($_POST["activity"]);
+		}
+		
+		if (empty($_POST["content"])) {
+			error();
+		} else {
+			$content = test_input($_POST["content"]);
+		}
+		
+		if (empty($_POST["location"])) {
+			error();
+		} else {
+			$location = test_input($_POST["location"]);
 		}
 		
 	}
 	
-	$current_time = date("Y-m-d H:i:s");
+	$date = $_POST["date"];
 	
 	//建立資料連接
 	$link = create_connection();
 	
 	//執行SQL查詢
-	$sql = "INSERT INTO list(subject) VALUES ('$list')";
+	$sql = "INSERT INTO activity(activity,content,location,date) VALUES ('$activity','$content','$location','$date')";
 	execute_sql($link, "todoit", $sql);
 	
 	//關閉資料連接
